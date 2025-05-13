@@ -1,0 +1,39 @@
+/* Estilo general del cuerpo */
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Panel de control */
+  #panel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 1;
+    width: 260px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  #panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+  }
+  
+  #panel label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+  }
+  
+  #panel select,
+  #panel input[type="color"],
+  #panel input[type="range"] {
+    width: 100%;
+    margin-top: 5px;
+  }
+  

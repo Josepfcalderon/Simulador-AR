@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AR con HIRO</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      #panel {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.75);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        z-index: 2;
+        width: 260px;
+      }
+
+      #panel h2 {
+        margin-top: 0;
+        font-size: 18px;
+      }
+
+      #panel label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+      }
+
+      #panel select,
+      #panel input[type="color"],
+      #panel input[type="range"] {
+        width: 100%;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Panel de control -->
+    <div id="panel">
+      <h2>Control de Figura</h2>
+      <label for="figura">Figura:</label>
+      <select id="figura">
+        <option value="box">Caja</option>
+        <option value="sphere">Esfera</option>
+        <option value="cylinder">Cilindro</option>
+        <option value="cone">Cono</option>
+      </select>
+
+      <label for="color">Color:</label>
+      <input type="color" id="color" value="#ff6347">
+
+      <label for="tamano">Tamaño:</label>
+      <input type="range" id="tamano" min="0.1" max="2" step="0.1" value="0.5">
+    </div>
+
+    <!-- Escena A-Frame con marcador HIRO -->
+    <a-scene embedded arjs="sourceType: webcam;">
+      <a-marker preset="hiro">
+        <a-entity id="figura-3d" position="0 0.5 0"></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const figuraSelect = document.getElementById("figura");
+        const colorInput = document.getElementById("color");
+        const tamanoInput = document.getElementById("tamano");
+
+        const figura3D = document.getElementById("figura-3d");
+
+        function actualizarFigura() {
+          const tipo = figuraSelect.value;
+          const color = colorInput.value;
+          const escala = tamanoInput.value;
+
+          // Limpiar el contenido actual
+          figura3D.innerHTML = "";
+
+          let entidad;
+
+          switch (tipo) {
+            case "box":
+              entidad = document.createElement("a-box");
+              break;
+            case "sphere":
+              entidad = document.createElement("a-sphere");
+              break;
+            case "cylinder":
+              entidad = document.createElement("a-cylinder");
+              break;
+            case "cone":
+              entidad = document.createElement("a-cone");
+              break;
+            default:
+              entidad = document.createElement("a-box");
+          }
+
+          entidad.setAttribute("color", color);
+          entidad.setAttribute("scale", `${escala} ${escala} ${escala}`);
+          entidad.setAttribute("position", "0 0 0");
+
+          figura3D.appendChild(entidad);
+        }
+
+        figuraSelect.addEventListener("change", actualizarFigura);
+        colorInput.addEventListener("input", actualizarFigura);
+        tamanoInput.addEventListener("input", actualizarFigura);
+
+        actualizarFigura();
+      });
+    </script>
+  </body>
+</html>
