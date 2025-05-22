@@ -44,7 +44,6 @@
     </style>
   </head>
   <body>
-    <!-- Panel de control -->
     <div id="panel">
       <h2>Control de Figura</h2>
       <label for="figura">Figura:</label>
@@ -53,6 +52,12 @@
         <option value="sphere">Esfera</option>
         <option value="cylinder">Cilindro</option>
         <option value="cone">Cono</option>
+        <option value="prism">Prisma Triangular</option>
+        <option value="hexprism">Prisma Hexagonal</option>
+        <option value="piramide">Pirámide Cuadrada</option>
+        <option value="octaedro">Octaedro</option>
+        <option value="decaedro">Decaedro</option>
+        <option value="icosaedro">Icosaedro</option>
       </select>
 
       <label for="color">Color:</label>
@@ -62,7 +67,6 @@
       <input type="range" id="tamano" min="0.1" max="2" step="0.1" value="0.5">
     </div>
 
-    <!-- Escena A-Frame con marcador HIRO -->
     <a-scene embedded arjs="sourceType: webcam;">
       <a-marker preset="hiro">
         <a-entity id="figura-3d" position="0 0.5 0"></a-entity>
@@ -83,7 +87,6 @@
           const color = colorInput.value;
           const escala = tamanoInput.value;
 
-          // Limpiar el contenido actual
           figura3D.innerHTML = "";
 
           let entidad;
@@ -101,15 +104,60 @@
             case "cone":
               entidad = document.createElement("a-cone");
               break;
+            case "prism":
+              entidad = document.createElement("a-cylinder");
+              entidad.setAttribute("segments-radial", "3");
+              break;
+            case "hexprism":
+              entidad = document.createElement("a-cylinder");
+              entidad.setAttribute("segments-radial", "6");
+              break;
+            case "piramide":
+              entidad = document.createElement("a-cone");
+              entidad.setAttribute("segments-radial", "4");
+              break;
+            case "octaedro":
+              // Simular octaedro con 2 conos opuestos
+              entidad = document.createElement("a-entity");
+              const cono1 = document.createElement("a-cone");
+              const cono2 = document.createElement("a-cone");
+              cono1.setAttribute("height", "1");
+              cono1.setAttribute("position", "0 0.5 0");
+              cono2.setAttribute("height", "1");
+              cono2.setAttribute("rotation", "180 0 0");
+              cono2.setAttribute("position", "0 -0.5 0");
+              [cono1, cono2].forEach(cono => {
+                cono.setAttribute("radius-bottom", "0");
+                cono.setAttribute("radius-top", "0.5");
+                cono.setAttribute("segments-radial", "3");
+                cono.setAttribute("color", color);
+              });
+              entidad.appendChild(cono1);
+              entidad.appendChild(cono2);
+              break;
+            case "decaedro":
+              entidad = document.createElement("a-cylinder");
+              entidad.setAttribute("segments-radial", "10");
+              break;
+            case "icosaedro":
+              entidad = document.createElement("a-sphere");
+              entidad.setAttribute("segments-width", "5");
+              entidad.setAttribute("segments-height", "5");
+              break;
             default:
               entidad = document.createElement("a-box");
+              break;
           }
 
-          entidad.setAttribute("color", color);
-          entidad.setAttribute("scale", `${escala} ${escala} ${escala}`);
-          entidad.setAttribute("position", "0 0 0");
-
-          figura3D.appendChild(entidad);
+          if (tipo !== "octaedro") {
+            entidad.setAttribute("color", color);
+            entidad.setAttribute("scale", `${escala} ${escala} ${escala}`);
+            entidad.setAttribute("position", "0 0 0");
+            figura3D.appendChild(entidad);
+          } else {
+            entidad.setAttribute("scale", `${escala} ${escala} ${escala}`);
+            figura3D.appendChild(entidad);
+          }
         }
 
         figuraSelect.addEventListener("change", actualizarFigura);
